@@ -39,6 +39,7 @@ D:\PLEX-STUFF\PYPROGS
 ├───label_remover
 ├───ltp
 ├───orchestrator
+├───poster_to_square
 ├───resizer
 ├───strip_columns
 ├───tcc
@@ -56,10 +57,76 @@ D:\PLEX-STUFF\PYPROGS
    6. label_remover [label_remover.py](#label_remover)
    7. ltp [landscape_to_portrait.py](#landscape_to_portrait)
    8. orchestrator [orchestrator.py](#orchestrator)
-   9. resizer [resizer.py](#resizer)
-   10. strip_columns [strip_columns.py](#strip_columns)
-   11. tcc [title_card_clips.py](#title_card_clips)
-   12. update_plex_artist_art [update_plex_artist_art.py](#update_plex_artist_art)
+   9. poster_to_square [poster_to_square.py](#poster_to_square)
+   10. resizer [resizer.py](#resizer)
+   11. strip_columns [strip_columns.py](#strip_columns)
+   12. tcc [title_card_clips.py](#title_card_clips)
+   13. update_plex_artist_art [update_plex_artist_art.py](#update_plex_artist_art)
+
+## poster_to_square
+
+[Back to top](#Scripts)
+
+The `poster_to_square.py` script scans a Plex or Posterizarr asset tree, looks for root-level portrait poster files such as `poster.jpg` for movies and shows, and creates a matching `square.ext` file beside each source image. By default it skips season folders such as `Season 01` and `Specials`, since Plex documents square art for movies and shows but not as a normal local asset type for seasons or episodes. If a `square.ext` already exists and is truly 1:1, the script leaves it alone. If `square.ext` exists but is not square, the script replaces it automatically. Instead of cropping the poster and losing content, it builds a square image from a blurred version of the same poster and then places the full poster in the center with a subtle shadow. This keeps the original art intact while still producing square artwork that looks intentional.
+
+Open a powershell prompt and navigate to `pyprogs` folder
+
+`cd pyprogs`
+
+Pick your folder for the script you want to run
+
+```bat
+cd poster_to_square
+python -m venv venv
+.\venv\scripts\activate.ps1
+python -m pip install --upgrade pip
+pip install -r .\requirements.txt
+```
+
+Now you are ready to run it
+
+```bat
+python poster_to_square.py --input-folder D:\Plex-Assets
+```
+
+That default command will:
+1. scan recursively under `D:\Plex-Assets`
+2. find files named `poster.jpg`, `poster.png`, or `poster.webp`
+3. skip season folders such as `Season 01` and `Specials`
+4. skip files that are not close to a standard 2:3 poster ratio
+5. create `square.jpg`, `square.png`, or `square.webp` in the same folder as the source
+6. skip an existing `square.ext` if it is already 1:1, or replace it if it is not 1:1
+
+Examples:
+
+```bat
+python poster_to_square.py --input-folder D:\Plex-Assets --overwrite
+```
+
+```bat
+python poster_to_square.py --input-folder D:\Plex-Assets --source-names poster,folder,cover
+```
+
+```bat
+python poster_to_square.py --input-folder D:\Plex-Assets --all-images --format jpg --size 1200
+```
+
+```bat
+python poster_to_square.py --input-folder D:\Plex-Assets --include-season-posters
+```
+
+Useful options:
+- `--overwrite` forces regeneration even when an existing `square.ext` is already 1:1
+- `--source-names poster,folder,cover` widens the filename match list
+- `--all-images` ignores filename matching and processes any supported portrait image in movie/show root folders
+- `--include-season-posters` opts into processing posters inside `Season XX` or `Specials` folders
+- `--format jpg|png|webp` forces the output type instead of following the source extension
+- `--size 1000` controls the square canvas size
+- `--progress-every 25` prints a progress update every 25 candidates, plus a final summary with start time, finish time, duration, and average rate
+- `--dry-run` shows what would be created without writing files
+- `--verbose` mirrors progress to the console and still writes a log file
+
+[Back to top](#Scripts)
 
 ## collage
 

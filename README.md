@@ -23,6 +23,7 @@ D:\PLEX-STUFF\PYPROGS
 ├───extract_tracks
 ├───fix_added_at
 ├───fmg
+├───poster_to_square
 ├───resizer
 │   ├───input
 │   └───output
